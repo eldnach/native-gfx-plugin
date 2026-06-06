@@ -13,7 +13,9 @@ The plugin maintains a ring of staging buffers and handles versioning, issuing a
 GPU copy from the current frame's staging buffer into the Unity-owned
 `GraphicsBuffer` each frame.
 
-Note: If the resource is used by the GPU, calling `GraphicsBuffer.SetData` can allocate a new resource for the frame. `SetData` should only be called once on init so the pointer to the Unity-owned buffer remains valid.
+**Notes:**
+1. `GraphicsBuffer.GetNativeBufferPtr` is a blocking call, since the native resource may not be ready by the time you call this function, or the render thread may alter the resource (invalidating your pointer).  So the main thread must block and synchronize with the render thread. This example calls it **once** during initialization to avoid syncing.
+2. If the resource is used by the GPU, calling `GraphicsBuffer.SetData` can allocate a new resource for the frame. `SetData` should only be called once on init so the pointer to the Unity-owned buffer remains valid.
 
 ## Build the plugin
 
